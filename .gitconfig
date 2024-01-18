@@ -1,0 +1,11 @@
+[user]
+	email = tiberius202@gmail.com
+	name = Tiberius202
+[credential]
+	helper = store
+[pull]
+	rebase = false
+[core]
+	editor = "neovim"
+[init]
+	defaultBranch = master
