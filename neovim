@@ -1,9 +1,7 @@
 #!/bin/sh
 if [ -z "${NVIM}"]
 then
-    setxkbmap -option caps:swapescape
     nvim $@
-    setxkbmap -option
 else
     nvim --server ${NVIM} --remote "${PWD}/$@"
 fi
