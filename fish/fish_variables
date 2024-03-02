@@ -1,5 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR ANVIL:76\x2e125\x2e206\x2e237
 SETUVAR EDITOR:neovim
 SETUVAR VISUAL:neovim
 SETUVAR XDG_CONFIG_HOME:/home/jon/\x2econfig/
