@@ -86,10 +86,30 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
+    },
+  },
+
+  { -- Autoformat
+    'stevearc/conform.nvim',
+    opts = {
+      notify_on_error = false,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        -- Conform can also run multiple formatters sequentially
+        python = { "isort", "black" },
+        --
+        -- You can use a sub-list to tell conform to run *until* a formatter
+        -- is found.
+        -- javascript = { { "prettierd", "prettier" } },
+      },
     },
   },
 
@@ -241,6 +261,7 @@ require('lazy').setup({
 
 -- Set highlight on search
 vim.o.hlsearch = true
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Make line numbers default
 vim.wo.number = true
@@ -276,6 +297,9 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- Preview substitutions live, as you type!
+vim.opt.inccommand = 'split'
+
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.scrolloff = 8
@@ -299,20 +323,31 @@ vim.keymap.set('t', '<C-^>', '<C-\\><C-n><C-^>', {})
 vim.keymap.set('n', '<leader>ut', ':UndotreeToggle<cr>', {})
 vim.keymap.set('n', '<leader>)', '$a)<Esc>', {})
 
+-- Keybinds to make split navigation easier.
+--  Use CTRL+<hjkl> to switch between windows
+--
+--  See `:help wincmd` for a list of all window commands
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
 -- Opens your neovim rc By Tiberius
-vim.api.nvim_create_user_command('Config', ':e /home/jon/.config/nvim/init.lua', { nargs = 0 })
-vim.api.nvim_create_user_command('Plugins', ':e /home/jon/.config/nvim/lua/custom/plugins/init.lua', { nargs = 0 })
-vim.api.nvim_create_user_command('DebuggerConfig', ':e /home/jon/.config/nvim/lua/kickstart/plugins/debug.lua', { nargs = 0 })
+vim.api.nvim_create_user_command('Config', ':e ~/.config/nvim/init.lua', { nargs = 0 })
+vim.api.nvim_create_user_command('Plugins', ':e ~/.config/nvim/lua/custom/plugins/init.lua', { nargs = 0 })
+vim.api.nvim_create_user_command('DebuggerConfig', ':e ~/.config/nvim/lua/kickstart/plugins/debug.lua', { nargs = 0 })
+vim.opt.shell = "/usr/bin/fish"
+
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
   callback = function()
     vim.highlight.on_yank()
   end,
   group = highlight_group,
-  pattern = '*',
 })
 
 -- [[ Configure Telescope ]]
@@ -345,6 +380,8 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
+vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telecope' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -481,6 +518,11 @@ require('which-key').register {
   ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
 }
 
+-- Setup neovim lua configuration
+require('neodev').setup({
+  library = { plugins = { "nvim-dap-ui" }, types = true }
+})
+
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
@@ -510,11 +552,6 @@ local servers = {
   },
 }
 
--- Setup neovim lua configuration
-require('neodev').setup({
-  library = { plugins = { "nvim-dap-ui" }, types = true }
-})
-
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -538,14 +575,13 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
--- vim.lsp.set_log_level("debug")
--- -- Setup servers that are not supported by mason_lspconfig
--- require('lspconfig').millet.setup {
---     capabilities = capabilities,
---     on_attach = on_attach,
---     filetypes = { 'sml', 'sig', 'fun', },
---     init_options : false
--- }
+vim.lsp.set_log_level("debug")
+-- Setup servers that are not supported by mason_lspconfig
+require('lspconfig').millet.setup {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  filetypes = { 'sml', 'sig', 'fun', },
+}
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -588,6 +624,16 @@ cmp.setup {
         fallback()
       end
     end, { 'i', 's' }),
+    ['<C-l>'] = cmp.mapping(function()
+      if luasnip.expand_or_locally_jumpable() then
+        luasnip.expand_or_jump()
+      end
+    end, { 'i', 's' }),
+    ['<C-h>'] = cmp.mapping(function()
+      if luasnip.locally_jumpable(-1) then
+        luasnip.jump(-1)
+      end
+    end, { 'i', 's' }),
   },
   sources = {
     { name = 'nvim_lsp' },
@@ -618,15 +664,15 @@ require('rainbow-delimiters.setup').setup {
 }
 
 require 'term-edit'.setup {
-    -- Mandatory option:
-    -- Set this to a lua pattern that would match the end of your prompt.
-    -- Or a table of multiple lua patterns where at least one would match the
-    -- end of your prompt at any given time.
-    -- For most bash/zsh user this is '%$ '.
-    -- For most powershell/fish user this is '> '.
-    -- For most windows cmd user this is '>'.
-    prompt_end = '> ',
-    -- How to write lua patterns: https://www.lua.org/pil/20.2.html
+  -- Mandatory option:
+  -- Set this to a lua pattern that would match the end of your prompt.
+  -- Or a table of multiple lua patterns where at least one would match the
+  -- end of your prompt at any given time.
+  -- For most bash/zsh user this is '%$ '.
+  -- For most powershell/fish user this is '> '.
+  -- For most windows cmd user this is '>'.
+  prompt_end = '> ',
+  -- How to write lua patterns: https://www.lua.org/pil/20.2.html
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
