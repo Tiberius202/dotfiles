@@ -4,23 +4,30 @@
 -- See the kickstart.nvim README for more information
 return {
 	{
-	  'gelguy/wilder.nvim',
-	  config = function()
-	    -- config goes here
-		local wilder = require('wilder')
-		wilder.setup({modes = {':', '/', '?'}})
-		wilder.set_option('renderer', wilder.popupmenu_renderer({
-		  highlighter = wilder.basic_highlighter(),
-		  left = {' ', wilder.popupmenu_devicons()},
-		  right = {' ', wilder.popupmenu_scrollbar()},
-		}))
-	  end,
+		'gelguy/wilder.nvim',
+		config = function()
+			local wilder = require('wilder')
+			wilder.setup({ modes = { ':', '/', '?' } }) -- , enable_cmdline_enter = 0 })
+			wilder.set_option('renderer', wilder.popupmenu_renderer({
+				reverse = true,
+				highlighter = wilder.basic_highlighter(),
+				left = { ' ', wilder.popupmenu_devicons() },
+				right = { ' ', wilder.popupmenu_scrollbar() },
+			}))
+			wilder.set_option('pipeline', {
+				wilder.branch(
+					wilder.cmdline_pipeline({ language = 'python', fuzzy = 1 })
+				-- wilder.python_search_pipeline({ pattern = wilder.python_fuzzy_pattern(), engine = 're2', })
+				)
+			})
+		end,
 	},
 	{
 		"mbbill/undotree",
 	},
 	{
 		"HiPhish/rainbow-delimiters.nvim",
+		submodules = false,
 	},
 	{
 		'chomosuke/term-edit.nvim',
@@ -36,5 +43,21 @@ return {
 				-- Configuration here, or leave empty to use defaults
 			})
 		end
-	}
+	},
+	{
+		"github/copilot.vim",
+	},
+	{
+		"ThePrimeagen/harpoon",
+		-- branch = "harpoon2",
+		config = function()
+			require("harpoon").setup({})
+			vim.keymap.set("n", "<leader>t",
+				function()
+					vim.api.nvim_command("update")
+					require("harpoon.term").gotoTerminal(1)
+				end
+			)
+		end,
+	},
 }
