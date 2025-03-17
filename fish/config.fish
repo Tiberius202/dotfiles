@@ -18,5 +18,3 @@ else
         set -x PATH "/home/jonathan/miniconda3/bin" $PATH
     end
 end
-# <<< conda initialize <<<
-
