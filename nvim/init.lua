@@ -498,7 +498,6 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', {})
 vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>', {})
 vim.keymap.set('t', '<C-^>', '<C-\\><C-n><C-^>', {})
-vim.keymap.set('t', '<leader>t', '<C-\\><C-n><C-^>', {})
 vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-h>', {})
 vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-j>', {})
 vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-k>', {})
@@ -800,7 +799,7 @@ require 'term-edit'.setup {
   -- For most bash/zsh user this is '%$ '.
   -- For most powershell/fish user this is '> '.
   -- For most windows cmd user this is '>'.
-  prompt_end = '> ',
+  prompt_end = '$ ',
   -- How to write lua patterns: https://www.lua.org/pil/20.2.html
 }
 
