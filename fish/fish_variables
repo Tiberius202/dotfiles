@@ -4,7 +4,7 @@ SETUVAR ANVIL:76\x2e125\x2e206\x2e237
 SETUVAR EDITOR:neovim
 SETUVAR VISUAL:neovim
 SETUVAR XDG_CONFIG_HOME:/home/jon/\x2econfig/
-SETUVAR __fish_initialized:3100
+SETUVAR __fish_initialized:3400
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:blue

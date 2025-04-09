@@ -43,6 +43,10 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.g.have_nerd_font = false
+
+vim.opt.mouse = 'a'
+
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -213,6 +217,7 @@ require('lazy').setup({
   -- Fuzzy Finder (files, lsp, etc)
   {
     'nvim-telescope/telescope.nvim',
+    event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -228,6 +233,7 @@ require('lazy').setup({
           return vim.fn.executable 'make' == 1
         end,
       },
+      { 'nvim-telescope/telescope-ui-select.nvim' },
     },
   },
 
@@ -299,6 +305,10 @@ vim.o.termguicolors = true
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
+
+-- Configure how new splits should be opened
+vim.opt.splitbelow = true
+vim.opt.splitbelow = true
 
 vim.o.number = true
 vim.o.relativenumber = true
@@ -541,7 +551,7 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
-  pyright = {},
+  -- pyright = {},
   clangd = {},
   rust_analyzer = {},
   lua_ls = {
