@@ -14,12 +14,12 @@ return {
 				left = { ' ', wilder.popupmenu_devicons() },
 				right = { ' ', wilder.popupmenu_scrollbar() },
 			}))
-			wilder.set_option('pipeline', {
-				wilder.branch(
-					wilder.cmdline_pipeline({ language = 'python', fuzzy = 1 })
-				-- wilder.python_search_pipeline({ pattern = wilder.python_fuzzy_pattern(), engine = 're2', })
-				)
-			})
+			-- wilder.set_option('pipeline', {
+			-- 	wilder.branch(
+			-- 		wilder.cmdline_pipeline({ language = 'python', fuzzy = 1 })
+			-- 	-- wilder.python_search_pipeline({ pattern = wilder.python_fuzzy_pattern(), engine = 're2', })
+			-- 	)
+			-- })
 		end,
 	},
 	{

@@ -526,7 +526,8 @@ vim.keymap.set('i', '<C-j>', 'copilot#Accept("")', {
 vim.api.nvim_create_user_command('Config', ':e ~/.config/nvim/init.lua', { nargs = 0 })
 vim.api.nvim_create_user_command('Plugins', ':e ~/.config/nvim/lua/custom/plugins/init.lua', { nargs = 0 })
 vim.api.nvim_create_user_command('DebuggerConfig', ':e ~/.config/nvim/lua/kickstart/plugins/debug.lua', { nargs = 0 })
-vim.opt.shell = "/opt/homebrew/bin/fish"
+
+vim.opt.shell = "/usr/bin/fish"
 
 
 -- [[ Highlight on yank ]]
