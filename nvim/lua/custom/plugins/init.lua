@@ -55,7 +55,11 @@ return {
 			vim.keymap.set("n", "<leader>t",
 				function()
 					vim.api.nvim_command("update")
+					if string.find(vim.api.nvim_buf_get_name(0), "COMMIT") or string.find(vim.api.nvim_buf_get_name(0), "MERGE") then
+						vim.cmd("bd")
+					end
 					require("harpoon.term").gotoTerminal(1)
+					vim.cmd("startinsert")
 				end
 			)
 		end,
